@@ -62,8 +62,8 @@ export default function App() {
         const currentUser = await dbService.getSessionUser();
         if (currentUser) {
           setUser(currentUser);
-          // If profile is missing whatsapp_number or region, trigger onboarding modal
-          if (!currentUser.whatsapp_number || !currentUser.region) {
+          // WhatsApp number is optional; only a missing region requires onboarding
+          if (!currentUser.region) {
             setIsOnboarding(true);
           } else {
             // Respect seller preferred language on login
@@ -112,8 +112,8 @@ export default function App() {
     setUser(profile);
     setShowAuthOverlay(false);
     
-    // Check if onboarding is needed
-    if (!profile.whatsapp_number || !profile.region) {
+    // Check if onboarding is needed (WhatsApp number is optional)
+    if (!profile.region) {
       setIsOnboarding(true);
     } else {
       if (profile.preferred_language) {
@@ -803,9 +803,8 @@ export default function App() {
                   <p className="text-[10px] text-gray-400 mb-2">{t.labelWhatsAppHint}</p>
                   <input
                     type="tel"
-                    required
                     name="whatsappNumber"
-                    defaultValue={user.whatsapp_number}
+                    defaultValue={user.whatsapp_number || ''}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-white text-sm font-mono"
                   />
                 </div>

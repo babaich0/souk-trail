@@ -219,38 +219,6 @@ export const dbService = {
     return profile;
   },
 
-  async signInWithPhoneSimulated(phone: string, name: string): Promise<UserProfile | null> {
-    initializeLocalStorage();
-    // In local simulation, we sign in using the phone number as id
-    const id = 'tel_' + btoa(phone).replace(/=/g, '').substring(0, 12);
-    
-    const users = JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '{}');
-    let profile: UserProfile;
-    
-    if (users[id]) {
-      profile = users[id];
-      if (name && profile.display_name !== name) {
-        profile.display_name = name;
-        users[id] = profile;
-        localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
-      }
-    } else {
-      profile = {
-        id,
-        display_name: name || `User ${phone.substring(phone.length - 4)}`,
-        whatsapp_number: phone,
-        region: '',
-        preferred_language: 'en',
-        created_at: new Date().toISOString()
-      };
-      users[id] = profile;
-      localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
-    }
-    
-    localStorage.setItem(LOCAL_CURRENT_USER_KEY, JSON.stringify(profile));
-    return profile;
-  },
-
   async getSessionUser(): Promise<UserProfile | null> {
     if (isLiveSupabase && supabaseInstance) {
       const { data: { session } } = await supabaseInstance.auth.getSession();

@@ -3,7 +3,7 @@ export type Language = 'en' | 'fr' | 'ar';
 export interface UserProfile {
   id: string; // matches auth.users.id
   display_name: string;
-  whatsapp_number: string; // e.g., +212612345678 or 0612345678
+  whatsapp_number: string | null; // e.g., +212612345678 or 0612345678; optional, may be null
   region: string;
   preferred_language: Language;
   created_at?: string;

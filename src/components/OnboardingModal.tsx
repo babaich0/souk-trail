@@ -52,16 +52,14 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
     }
 
     const cleanPhone = whatsappNumber.replace(/\s+/g, '');
-    if (!cleanPhone) {
-      setErrorMsg("WhatsApp number is required.");
-      return;
-    }
 
-    // Basic WhatsApp validation for Morocco mobile numbers
-    const moroccoRegex = /^(?:\+212|0|212)?[567]\d{8}$/;
-    if (!moroccoRegex.test(cleanPhone)) {
-      setErrorMsg(t.labelWhatsAppHint || "Please enter a valid Moroccan number (e.g. 0612345678 or +212612345678).");
-      return;
+    // WhatsApp number is optional; only validate format if the user provided one
+    if (cleanPhone) {
+      const moroccoRegex = /^(?:\+212|0|212)?[567]\d{8}$/;
+      if (!moroccoRegex.test(cleanPhone)) {
+        setErrorMsg(t.labelWhatsAppHint || "Please enter a valid Moroccan number (e.g. 0612345678 or +212612345678).");
+        return;
+      }
     }
 
     setIsSaving(true);
@@ -140,7 +138,6 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             </p>
             <input
               type="tel"
-              required
               placeholder="e.g. 0612345678"
               value={whatsappNumber}
               onChange={(e) => setWhatsappNumber(e.target.value)}
