@@ -1,0 +1,6 @@
+{
+  "name": "Souk Trail",
+  "description": "Morocco/MENA's backpacker & camper marketplace to buy, sell, and trade outdoor gear.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
