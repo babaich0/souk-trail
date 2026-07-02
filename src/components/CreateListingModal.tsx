@@ -35,6 +35,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [photoError, setPhotoError] = useState('');
   const [dragActive, setDragActive] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -94,6 +95,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
     const filesToUpload = Array.from(files).slice(0, remainingSlots);
     setUploadingPhotos(true);
     setErrorMessage('');
+    setPhotoError('');
 
     try {
       const uploadPromises = filesToUpload.map(async (file) => {
@@ -124,6 +126,7 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
+    setPhotoError('');
 
     if (!title.trim()) {
       setErrorMessage("Listing title is required.");
@@ -135,6 +138,10 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
     }
     if (!region) {
       setErrorMessage("Please select your region.");
+      return;
+    }
+    if (!isEditMode && photoUrls.length === 0) {
+      setPhotoError("Please add at least one photo.");
       return;
     }
 
@@ -344,10 +351,10 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
           {/* Photo Uploader */}
           <div>
             <label className="block text-xs font-bold font-mono text-gray-500 uppercase tracking-wider mb-1">
-              {t.labelAddPhotos}
+              {t.labelAddPhotos} <span className="text-red-500">*</span>
             </label>
             <p className="text-[10px] text-gray-400 mb-3">{t.labelAddPhotosHint}</p>
-            
+
             {/* Drag & Drop Area */}
             <div
               onDragEnter={handleDrag}
@@ -356,8 +363,10 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
               className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all ${
-                dragActive 
-                  ? 'border-emerald-500 bg-emerald-50/50 scale-99' 
+                dragActive
+                  ? 'border-emerald-500 bg-emerald-50/50 scale-99'
+                  : photoError
+                  ? 'border-red-300 bg-red-50/30 hover:border-red-400'
                   : 'border-gray-200 hover:border-emerald-400 hover:bg-gray-50'
               }`}
             >
@@ -385,6 +394,13 @@ export const CreateListingModal: React.FC<CreateListingModalProps> = ({
                 </div>
               )}
             </div>
+
+            {photoError && (
+              <p className="mt-2 text-xs font-semibold text-red-600 flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                <span>{photoError}</span>
+              </p>
+            )}
 
             {/* Photo Previews */}
             {photoUrls.length > 0 && (
